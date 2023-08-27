@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
 
   LoginScreen({required this.database});
 
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
@@ -23,10 +23,9 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
             TextFormField(
-              controller: usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             SizedBox(height: 10),
             // Text field for password.
@@ -38,7 +37,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                final username = usernameController.text;
+                final username = emailController.text;
                 final password = passwordController.text;
 
                 loginUser(username, password).then((user) {
@@ -86,11 +85,10 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Future<User?> loginUser(String username, String password) async {
-
+  Future<User?> loginUser(String email, String password) async {
     final usersCollection = database.collection('users');
     final user = await usersCollection.findOne({
-      'username': username,
+      'email': email,
       'password': password,
     });
 
@@ -98,7 +96,8 @@ class LoginScreen extends StatelessWidget {
       return User(
         id: user['_id'].toString(),
         username: user['username'],
-        email: user['email'], passwordHash: user['password'],
+        email: user['email'],
+        passwordHash: user['password'],
       );
     } else {
       return null;
