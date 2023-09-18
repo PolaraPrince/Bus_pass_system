@@ -1,7 +1,6 @@
-import 'package:bus_pass_system/frontend/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'user_profile_screen.dart';
+import 'package:bus_pass_system/frontend/user_model.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -14,6 +13,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticatedUser? user; // Declare user variable
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -36,56 +37,59 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final username = emailController.text;
                 final password = passwordController.text;
 
-                loginUser(username, password).then((user) {
-                  if (user != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserProfileScreen(user: user),
-                      ),
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Login Failed'),
-                        content: Text('Invalid username or password.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                });
+                user = await loginUser(username, password);
+
+                if (user != null) {
+                  // Navigate to UserProfileScreen when login is successful.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(user: user!),
+                    ),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Login Failed'),
+                      content: Text('Invalid username or password.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
               child: Text('Login'),
             ),
 
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SignUpScreen(database: database),
-                  ),
-                );
-              },
-              child: Text('Sign Up'),
-            ),
+            // Show the "Sign Up" button conditionally
+            if (user == null) // Add this condition
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignUpScreen(database: database),
+                    ),
+                  );
+                },
+                child: Text('Sign Up'),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Future<User?> loginUser(String email, String password) async {
+  Future<AuthenticatedUser?> loginUser(String email, String password) async {
     final usersCollection = database.collection('users');
     final user = await usersCollection.findOne({
       'email': email,
@@ -93,7 +97,7 @@ class LoginScreen extends StatelessWidget {
     });
 
     if (user != null) {
-      return User(
+      return AuthenticatedUser(
         id: user['_id'].toString(),
         username: user['username'],
         email: user['email'],

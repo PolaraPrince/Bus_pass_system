@@ -3,7 +3,7 @@ import 'package:bus_pass_system/frontend/user_model.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class ApplyPassScreen extends StatefulWidget {
-  final User user;
+  final UserProfile user;
 
   ApplyPassScreen({required this.user});
 
@@ -28,6 +28,17 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
     '9 Months',
     '12 Months'
   ];
+
+  bool isSubmitted = false; // Flag to track submission status
+
+  void resetForm() {
+    nameController.clear();
+    emailController.clear();
+    mobileController.clear();
+    addressController.clear();
+    selectedProfession = null;
+    selectedDuration = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +177,12 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                         // Close the MongoDB connection
                         mongoClient.close();
 
+                        // Set the flag and reset the form
+                        setState(() {
+                          isSubmitted = true;
+                          resetForm();
+                        });
+
                         // Show a success message
                         showDialog(
                           context: context,
@@ -211,7 +228,8 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   }
                 },
                 child: Text('Submit'),
-              ),
+              )
+              
             ],
           ),
         ),
