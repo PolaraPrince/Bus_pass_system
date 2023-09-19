@@ -3,9 +3,9 @@ import 'package:bus_pass_system/frontend/user_model.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class ApplyPassScreen extends StatefulWidget {
-  final UserProfile user;
+  final User user;
 
-  ApplyPassScreen({required this.user});
+  const ApplyPassScreen({super.key, required this.user});
 
   @override
   _ApplyPassScreenState createState() => _ApplyPassScreenState();
@@ -44,7 +44,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Apply for Pass'),
+        title: const Text('Apply for Pass'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,7 +55,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
             children: [
               TextFormField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -63,7 +63,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: selectedProfession,
                 items: professions.map((profession) {
@@ -77,7 +77,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                     selectedProfession = value;
                   });
                 },
-                decoration: InputDecoration(labelText: 'Profession'),
+                decoration: const InputDecoration(labelText: 'Profession'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please select your profession';
@@ -85,10 +85,10 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
@@ -97,10 +97,10 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: mobileController,
-                decoration: InputDecoration(labelText: 'Mobile No'),
+                decoration: const InputDecoration(labelText: 'Mobile No'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your mobile number';
@@ -108,10 +108,10 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: addressController,
-                decoration: InputDecoration(labelText: 'Address'),
+                decoration: const InputDecoration(labelText: 'Address'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your address';
@@ -119,7 +119,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: selectedDuration,
                 items: durations.map((duration) {
@@ -133,7 +133,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                     selectedDuration = value;
                   });
                 },
-                decoration: InputDecoration(labelText: 'Duration'),
+                decoration: const InputDecoration(labelText: 'Duration'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please select the duration for the pass';
@@ -141,7 +141,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -187,8 +187,8 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Application Submitted'),
-                            content: Text(
+                            title: const Text('Application Submitted'),
+                            content: const Text(
                                 'Your pass application has been submitted successfully.'),
                             actions: [
                               TextButton(
@@ -197,7 +197,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                                   Navigator.pop(
                                       context); // Go back to the user profile screen
                                 },
-                                child: Text('OK'),
+                                child: const Text('OK'),
                               ),
                             ],
                           ),
@@ -211,14 +211,15 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text('Failed to submit pass application.'),
+                            title: const Text('Error'),
+                            content: const Text(
+                                'Failed to submit pass application.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text('OK'),
+                                child: const Text('OK'),
                               ),
                             ],
                           ),
@@ -227,9 +228,8 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                     });
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               )
-              
             ],
           ),
         ),

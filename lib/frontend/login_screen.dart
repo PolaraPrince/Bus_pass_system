@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:bus_pass_system/frontend/user_model.dart';
 import 'signup_screen.dart';
+import 'user_profile_screen.dart'; // Import UserProfileScreen
+// Import the User class
 
 class LoginScreen extends StatelessWidget {
   final Db database;
 
-  LoginScreen({required this.database});
+  LoginScreen({super.key, required this.database});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    AuthenticatedUser? user; // Declare user variable
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,85 +26,96 @@ class LoginScreen extends StatelessWidget {
           children: [
             TextFormField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Text field for password.
             TextFormField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
+              onPressed: () {
                 final username = emailController.text;
                 final password = passwordController.text;
 
-                user = await loginUser(username, password);
-
-                if (user != null) {
-                  // Navigate to UserProfileScreen when login is successful.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(user: user!),
-                    ),
-                  );
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Login Failed'),
-                      content: Text('Invalid username or password.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('OK'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                loginUser(username, password).then((user) {
+                  if (user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserProfileScreen(
+                            user: user), // Navigate to UserProfileScreen
+                      ),
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Login Failed'),
+                        content: const Text('Invalid username or password.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                });
               },
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
 
-            // Show the "Sign Up" button conditionally
-            if (user == null) // Add this condition
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignUpScreen(database: database),
-                    ),
-                  );
-                },
-                child: Text('Sign Up'),
-              ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignUpScreen(database: database),
+                  ),
+                );
+              },
+              child: const Text('Sign Up'),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Future<AuthenticatedUser?> loginUser(String email, String password) async {
-    final usersCollection = database.collection('users');
-    final user = await usersCollection.findOne({
-      'email': email,
-      'password': password,
-    });
+  Future<User?> loginUser(String email, String password) async {
+  final usersCollection = database.collection('users');
+  final user = await usersCollection.findOne({
+    'email': email,
+    'password': password,
+  });
 
-    if (user != null) {
-      return AuthenticatedUser(
-        id: user['_id'].toString(),
-        username: user['username'],
-        email: user['email'],
-        passwordHash: user['password'],
-      );
-    } else {
-      return null;
-    }
+  if (user != null) {
+    // Check if 'id' is not null before accessing it
+    final id = user['id'] ?? '';
+    final username = user['username'] ?? '';
+    final email = user['email'] ?? '';
+    final password = user['password'] ?? '';
+
+    return User(
+      id: id,
+      username: username,
+      email: email,
+      password: password,
+      // You might need to fetch other fields as needed
+    );
+  } else {
+    // User not found, return null
+    return null;
   }
 }
+
+}
+
+    
+  
+

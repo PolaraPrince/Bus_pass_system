@@ -16,7 +16,7 @@ Future<Db> initDatabase() async {
 
 class MyApp extends StatelessWidget {
   final Db database;
-  MyApp({required this.database});
+  const MyApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {

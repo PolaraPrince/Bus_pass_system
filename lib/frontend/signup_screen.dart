@@ -14,7 +14,7 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: const Text('Sign Up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,13 +24,13 @@ class SignUpScreen extends StatelessWidget {
             // Text field for username.
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Text field for email.
             TextFormField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Email is required';
@@ -41,11 +41,11 @@ class SignUpScreen extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextFormField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -56,7 +56,7 @@ class SignUpScreen extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 final username = usernameController.text;
@@ -72,12 +72,12 @@ class SignUpScreen extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('Registration Failed'),
-                          content: Text('Failed to register user.'),
+                          title: const Text('Registration Failed'),
+                          content: const Text('Failed to register user.'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text('OK'),
+                              child: const Text('OK'),
                             ),
                           ],
                         ),
@@ -86,7 +86,7 @@ class SignUpScreen extends StatelessWidget {
                   });
                 }
               },
-              child: Text('Register'),
+              child: const Text('Register'),
             ),
           ],
         ),
@@ -113,31 +113,31 @@ class SignUpScreen extends StatelessWidget {
   bool _validateForm(BuildContext context) {
     if (usernameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Username is required')),
+        const SnackBar(content: Text('Username is required')),
       );
       return false;
     }
     if (emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email is required')),
+        const SnackBar(content: Text('Email is required')),
       );
       return false;
     }
     if (passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password is required')),
+        const SnackBar(content: Text('Password is required')),
       );
       return false;
     }
     if (!emailController.text.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid email format')),
+        const SnackBar(content: Text('Invalid email format')),
       );
       return false;
     }
     if (passwordController.text.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password must be at least 8 characters')),
+        const SnackBar(content: Text('Password must be at least 8 characters')),
       );
       return false;
     }
