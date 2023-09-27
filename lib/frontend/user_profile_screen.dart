@@ -1,3 +1,4 @@
+import 'package:bus_pass_system/frontend/Renewpassscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:bus_pass_system/frontend/user_model.dart';
 import 'apply_pass_screen.dart';
@@ -16,7 +17,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     // Use the 'isDarkMode' variable to set the theme mode
     final themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
@@ -28,7 +28,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('E-Bus Pass'),
-          backgroundColor: const Color.fromARGB(255, 75, 223, 129),
+          backgroundColor: const Color.fromARGB(255, 120, 118, 212),
         ),
         drawer: Drawer(
           child: ListView(
@@ -36,7 +36,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             children: [
               DrawerHeader(
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 238, 168, 71),
+                  color: Color.fromARGB(255, 200, 159, 103),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,73 +71,104 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   Navigator.pushReplacementNamed(context, '/');
                 },
               ),
-              // Dark/Light mode switch
-              SwitchListTile(
+              // Replace the Dark Mode switch with an icon
+              ListTile(
+                leading: const Icon(Icons.nightlight_round),
                 title: Text('Dark Mode'),
-                value: isDarkMode,
-                onChanged: (value) {
+                onTap: () {
                   setState(() {
-                    isDarkMode = value; // Update the dark mode status
+                    isDarkMode = !isDarkMode; // Toggle dark mode
                   });
                 },
               ),
             ],
           ),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Buttons column
-              Column(
-                children: [
-                  // Apply for Pass button
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigate to the ApplyPassScreen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ApplyPassScreen(user: widget.user),
+        backgroundColor: Color.fromARGB(255, 123, 187, 150),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/userscreen.jpg', // Replace with your image path
+                  width: 365, // Adjust the width as needed
+                  height: 350, // Adjust the height as needed
+                  fit: BoxFit.cover, // Choose the desired fit
+                ),
+                // Buttons column
+                Padding(
+                  padding: const EdgeInsets.all(
+                      30.0), // Adjust the padding as needed
+                  child: Column(
+                    children: [
+                      // Apply for Pass button
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to the ApplyPassScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ApplyPassScreen(user: widget.user),
+                              ),
+                            );
+                          },
+                          child: const Text('Apply for Pass'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromARGB(255, 98, 131, 189),
                           ),
-                        );
-                      },
-                      child: const Text('Apply for Pass'),
-                    ),
-                  ),
-                  const SizedBox(
-                      height: 10), // Add some spacing between the buttons
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      // Add some spacing between the buttons
 
-                  // Renew Pass button
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Implement the logic to renew the pass here.
-                      },
-                      child: const Text('Renew Pass'),
-                    ),
-                  ),
+                      // Renew Pass button
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: () {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RenewPassScreen(
+                                    user: widget
+                                        .user), // Navigate to the RenewPassScreen
+                              ),
+                            );
+                            // Implement the logic to renew the pass here.
+                          },
+                          child: const Text('Renew Pass'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromARGB(255, 98, 131, 189),
+                          ),
+                        ),
+                      ),
 
-                  const SizedBox(height: 10), // Add spacing
+                      const SizedBox(height: 10), // Add spacing
 
-                  // Show Pass button
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Implement logic to show the pass here.
-                      },
-                      child: const Text('Show Pass'),
-                    ),
+                      // Show Pass button
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Implement logic to show the pass here.
+                          },
+                          child: const Text('Show Pass'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 98, 131, 189),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

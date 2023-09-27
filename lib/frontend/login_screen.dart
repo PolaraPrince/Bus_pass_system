@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:bus_pass_system/frontend/user_model.dart';
 import 'signup_screen.dart';
-import 'user_profile_screen.dart'; // Import UserProfileScreen
-// Import the User class
+import 'user_profile_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final Db database;
@@ -18,76 +17,92 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        backgroundColor: Color.fromARGB(255, 120, 118, 212),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Image.asset(
-                  "assets/Images/Login_Image.png",
-                  fit: BoxFit.cover,
-                ),
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                const SizedBox(height: 10),
-                // Text field for password.
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    final username = emailController.text;
-                    final password = passwordController.text;
+      backgroundColor: Color.fromARGB(255, 39, 135, 135),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Image.asset(
+                    "assets/Images/Login_Image.png",
+                    fit: BoxFit.cover,
+                  ),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(labelText: 'Password'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      final username = emailController.text;
+                      final password = passwordController.text;
 
-                    loginUser(username, password).then((user) {
-                      if (user != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserProfileScreen(
-                                user: user), // Navigate to UserProfileScreen
-                          ),
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Login Failed'),
-                            content:
-                                const Text('Invalid username or password.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    });
-                  },
-                  child: const Text('Login'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpScreen(database: database),
-                      ),
-                    );
-                  },
-                  child: const Text('Sign Up'),
-                ),
-              ],
+                      loginUser(username, password).then((user) {
+                        if (user != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserProfileScreen(user: user),
+                            ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Login Failed'),
+                              content:
+                                  const Text('Invalid username or password.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      });
+                    },
+                    child: const Text('Login'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 14, 8, 0),
+                      // Change the button color
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SignUpScreen(database: database),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -103,7 +118,6 @@ class LoginScreen extends StatelessWidget {
     });
 
     if (user != null) {
-      // Check if 'id' is not null before accessing it
       final id = user['id'] ?? '';
       final username = user['username'] ?? '';
       final email = user['email'] ?? '';
@@ -114,10 +128,8 @@ class LoginScreen extends StatelessWidget {
         username: username,
         email: email,
         password: password,
-        // You might need to fetch other fields as needed
       );
     } else {
-      // User not found, return null
       return null;
     }
   }

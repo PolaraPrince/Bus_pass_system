@@ -15,6 +15,7 @@ class SignUpScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: const Color.fromARGB(255, 120, 118, 212),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,8 +88,10 @@ class SignUpScreen extends StatelessWidget {
                 }
               },
               child: const Text('Register'),
+              style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 14, 8, 0),
             ),
-          ],
+        ),],
         ),
       ),
     );
