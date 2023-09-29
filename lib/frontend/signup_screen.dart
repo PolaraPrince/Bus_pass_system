@@ -87,10 +87,10 @@ class SignUpScreen extends StatelessWidget {
                   });
                 }
               },
-              child: const Text('Register'),
               style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 14, 8, 0),
+                    backgroundColor: const Color.fromARGB(255, 14, 8, 0),
             ),
+              child: const Text('Register'),
         ),],
         ),
       ),

@@ -17,9 +17,9 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Color.fromARGB(255, 120, 118, 212),
+        backgroundColor: const Color.fromARGB(255, 120, 118, 212),
       ),
-      backgroundColor: Color.fromARGB(255, 39, 135, 135),
+      backgroundColor: const Color.fromARGB(255, 39, 135, 135),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -80,11 +80,11 @@ class LoginScreen extends StatelessWidget {
                         }
                       });
                     },
-                    child: const Text('Login'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 14, 8, 0),
+                      backgroundColor: const Color.fromARGB(255, 14, 8, 0),
                       // Change the button color
                     ),
+                    child: const Text('Login'),
                   ),
                   TextButton(
                     onPressed: () {

@@ -1,6 +1,8 @@
 import 'package:bus_pass_system/frontend/Renewpassscreen.dart';
 import 'package:bus_pass_system/frontend/passdetailsscreen.dart';
 import 'package:flutter/material.dart';
+
+
 import 'package:bus_pass_system/frontend/user_model.dart';
 import 'apply_pass_screen.dart';
 
@@ -15,7 +17,9 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   bool isDarkMode = false; // Add a boolean to track dark mode status
-
+  Map<String, dynamic> yourPassDetails = {
+    'passId': 'yourPassIdHere',
+  };
   @override
   Widget build(BuildContext context) {
     // Use the 'isDarkMode' variable to set the theme mode
@@ -75,7 +79,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 // Replace the Dark Mode switch with an icon
                 ListTile(
                   leading: const Icon(Icons.nightlight_round),
-                  title: Text('Dark Mode'),
+                  title: const Text('Dark Mode'),
                   onTap: () {
                     setState(() {
                       isDarkMode = !isDarkMode; // Toggle dark mode
@@ -85,7 +89,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ],
             ),
           ),
-          backgroundColor: Color.fromARGB(255, 123, 187, 150),
+          backgroundColor: const Color.fromARGB(255, 123, 187, 150),
           body: SingleChildScrollView(
             child: Center(
               child: Column(
@@ -123,10 +127,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Apply for Pass'),
                             style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 98, 131, 189),
+                              backgroundColor: const Color.fromARGB(255, 98, 131, 189),
                             ),
+                            child: const Text('Apply for Pass'),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -150,10 +154,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Renew Pass'),
                             style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 98, 131, 189),
+                              backgroundColor: const Color.fromARGB(255, 98, 131, 189),
                             ),
+                            child: const Text('Renew Pass'),
                           ),
                         ),
                         const SizedBox(height: 10), // Add spacing
@@ -166,16 +170,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                builder: (context) => ShowPassScreen(
+                                  builder: (context) => ShowPassScreen(
+                                      passDetails: yourPassDetails),
                                 ),
-                              ),
-                            );
-                          },
-                          child: const Text('Show Pass'),
-                          style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 98, 131, 189),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(255, 98, 131, 189),
+                            ),
+                            child: const Text('Show Pass'),
                           ),
-                        ),),
+                        ),
                       ],
                     ),
                   ),

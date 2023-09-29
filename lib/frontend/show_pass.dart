@@ -7,7 +7,7 @@ class PassDetailsScreen extends StatelessWidget {
   final String profession;
   final String duration;
 
-  PassDetailsScreen({
+  const PassDetailsScreen({super.key, 
     required this.name,
     required this.email,
     required this.mobile,
@@ -20,7 +20,7 @@ class PassDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pass Details'),
+        title: const Text('Pass Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

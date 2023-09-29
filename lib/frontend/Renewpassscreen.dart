@@ -5,7 +5,7 @@ import 'package:mongo_dart/mongo_dart.dart' as mongo;
 class RenewPassScreen extends StatefulWidget {
   final User user;
 
-  RenewPassScreen({
+  const RenewPassScreen({
     Key? key,
     required this.user, required String passId, required DateTime passExpirationDate,
   }) : super(key: key);
@@ -94,7 +94,7 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Pass Extended'),
+            title: const Text('Pass Extended'),
             content:
                 Text('Your pass has been extended until $newExpirationDate.'),
             actions: <Widget>[
@@ -102,7 +102,7 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -143,10 +143,10 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Renew Pass'),
-        backgroundColor: Color.fromARGB(255, 120, 118, 212),
+        title: const Text('Renew Pass'),
+        backgroundColor: const Color.fromARGB(255, 120, 118, 212),
       ),
-      backgroundColor: Color.fromARGB(255, 39, 135, 135),
+      backgroundColor: const Color.fromARGB(255, 39, 135, 135),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -168,7 +168,7 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
                         enteredPassId = value;
                       });
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter Pass ID',
                     ),
                     validator: (value) {
@@ -180,13 +180,13 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
                   ),
                   Text(
                     'Pass ID: $enteredPassId', // Display entered pass ID
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'Remaining Time: $remainingTimeString',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -204,7 +204,7 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
                       });
                     },
                     decoration:
-                        InputDecoration(labelText: 'Extension Duration'),
+                        const InputDecoration(labelText: 'Extension Duration'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please select the extension duration';
@@ -221,10 +221,10 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
                         extendPass();
                       }
                     },
-                    child: Text('Extend Pass'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 98, 131, 189),
+                      backgroundColor: const Color.fromARGB(255, 98, 131, 189),
                     ),
+                    child: const Text('Extend Pass'),
                   ),
                 ],
               ),

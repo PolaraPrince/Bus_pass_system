@@ -14,6 +14,7 @@ class ApplyPassScreen extends StatefulWidget {
     required this.passExpirationDate,});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ApplyPassScreenState createState() => _ApplyPassScreenState();
 }
 
@@ -93,7 +94,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
         title: const Text('Apply for Pass'),
         backgroundColor: const Color.fromARGB(255, 120, 118, 212),
       ),
-      backgroundColor: Color.fromARGB(255, 39, 135, 135),
+      backgroundColor: const Color.fromARGB(255, 39, 135, 135),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -161,7 +162,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                   // Update the TextFormField for Mobile No
                   TextFormField(
                     controller: mobileController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Mobile No',
                       prefixText: '+91 ',
                     ),
@@ -270,7 +271,7 @@ final passId = generatePassID();
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('Application Submitted'),
-                                content: Container(
+                                content: SizedBox(
                                   height: 200, // Adjust the height as needed
                                   child: Column(
                                     children: [
@@ -280,13 +281,13 @@ final passId = generatePassID();
                                       const SizedBox(height: 10),
                                       Text(
                                         'Pass ID: $passId',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
                                         'Expiration Date: $expirationDate', // Display the expiration date
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -347,10 +348,10 @@ final passId = generatePassID();
                         });
                       }
                     },
-                    child: const Text('Submit'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 98, 131, 189),
+                      backgroundColor: const Color.fromARGB(255, 98, 131, 189),
                     ),
+                    child: const Text('Submit'),
                   ),
                 ],
               ),
