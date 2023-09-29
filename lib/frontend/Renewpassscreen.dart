@@ -1,10 +1,14 @@
 import 'package:bus_pass_system/frontend/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class RenewPassScreen extends StatefulWidget {
   final User user;
 
-  const RenewPassScreen({Key? key, required this.user}) : super(key: key);
+  RenewPassScreen({
+    Key? key,
+    required this.user, required String passId, required DateTime passExpirationDate,
+  }) : super(key: key);
 
   @override
   _RenewPassScreenState createState() => _RenewPassScreenState();
@@ -12,22 +16,135 @@ class RenewPassScreen extends StatefulWidget {
 
 class _RenewPassScreenState extends State<RenewPassScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? selectedDuration;
+  String? selectedExtension;
+  String remainingTimeString = '';
+  DateTime? currentExpirationDate;
+  DateTime? newExpirationDate;
+  String? enteredPassId; // Added to store entered pass ID
 
-  List<String> durations = [
+  List<String> extensions = [
     '1 Month',
     '3 Months',
     '6 Months',
     '9 Months',
-    '12 Months'
+    '12 Months',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void fetchPassDetails() async {
+    final mongoClient = mongo.Db('mongodb://localhost:27017/pass_applications');
+    await mongoClient.open();
+
+    final collection = mongoClient.collection('applications');
+    final passDetails = await collection.findOne(
+      mongo.where.eq('passId', enteredPassId), // Use entered pass ID
+    );
+
+    if (passDetails != null) {
+      final expirationDate = passDetails['passExpirationDate'] as DateTime;
+      setState(() {
+        currentExpirationDate = expirationDate;
+        calculateRemainingTime();
+      });
+    }
+
+    await mongoClient.close();
+  }
+
+  void calculateRemainingTime() {
+    if (currentExpirationDate != null) {
+      final now = DateTime.now();
+      final remainingTime = currentExpirationDate!.difference(now);
+
+      final remainingDays = remainingTime.inDays;
+      final remainingHours = remainingTime.inHours % 24;
+
+      setState(() {
+        remainingTimeString = '$remainingDays days $remainingHours hours';
+      });
+    }
+  }
+
+  void extendPass() async {
+    if (selectedExtension != null) {
+      newExpirationDate = calculateNewExpirationDate(selectedExtension);
+
+      final mongoClient =
+          mongo.Db('mongodb://localhost:27017/pass_applications');
+      await mongoClient.open();
+
+      final collection = mongoClient.collection('applications');
+      await collection.update(
+        mongo.where.eq('passId', enteredPassId), // Use entered pass ID
+        mongo.modify.set('passExpirationDate', newExpirationDate),
+      );
+
+      await mongoClient.close();
+
+      setState(() {
+        currentExpirationDate = newExpirationDate;
+        calculateRemainingTime();
+      });
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Pass Extended'),
+            content:
+                Text('Your pass has been extended until $newExpirationDate.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  DateTime calculateNewExpirationDate(String? selectedExtension) {
+    if (currentExpirationDate != null && selectedExtension != null) {
+      int monthsToAdd = 0;
+
+      switch (selectedExtension) {
+        case '1 Month':
+          monthsToAdd = 1;
+          break;
+        case '3 Months':
+          monthsToAdd = 3;
+          break;
+        case '6 Months':
+          monthsToAdd = 6;
+          break;
+        case '9 Months':
+          monthsToAdd = 9;
+          break;
+        case '12 Months':
+          monthsToAdd = 12;
+          break;
+      }
+
+      return currentExpirationDate!.add(Duration(days: 30 * monthsToAdd));
+    } else {
+      return currentExpirationDate ?? DateTime.now();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Renew Pass'),
-        backgroundColor: const Color.fromARGB(255, 120, 118, 212),
+        title: Text('Renew Pass'),
+        backgroundColor: Color.fromARGB(255, 120, 118, 212),
       ),
       backgroundColor: Color.fromARGB(255, 39, 135, 135),
       body: Padding(
@@ -44,47 +161,67 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  DropdownButtonFormField<String>(
-                    value: selectedDuration,
-                    items: durations.map((duration) {
-                      return DropdownMenuItem(
-                        value: duration,
-                        child: Text(duration),
-                      );
-                    }).toList(),
+                  TextFormField(
+                    // Text input for pass ID
                     onChanged: (value) {
                       setState(() {
-                        selectedDuration = value;
+                        enteredPassId = value;
                       });
                     },
-                    decoration:
-                        const InputDecoration(labelText: 'New Duration'),
+                    decoration: InputDecoration(
+                      labelText: 'Enter Pass ID',
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please select the new duration for the pass';
+                        return 'Please enter the Pass ID';
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  Text(
+                    'Pass ID: $enteredPassId', // Display entered pass ID
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Remaining Time: $remainingTimeString',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: selectedExtension,
+                    items: extensions.map((extension) {
+                      return DropdownMenuItem(
+                        value: extension,
+                        child: Text(extension),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedExtension = value;
+                      });
+                    },
+                    decoration:
+                        InputDecoration(labelText: 'Extension Duration'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select the extension duration';
+                      }
+                      return null;
+                    },
+                  ),
+                 
                   ElevatedButton(
+                    
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Form is valid, process the renewal
-                        final selectedDuration = this.selectedDuration;
-
-                        // Calculate the new duration using the calculateNewDuration method
-                        final newDuration =
-                            calculateNewDuration(selectedDuration);
-
-                        // Now, you have the newDuration calculated based on your logic
-                        // You can use this value to perform pass renewal logic (update the duration in the database, etc.)
-
-                        // Show a success message or navigate back to the user profile screen
-                        // ...
+                      if (enteredPassId != null &&
+                          _formKey.currentState!.validate()) {
+                        extendPass();
                       }
                     },
-                    child: const Text('Renew Pass'),
+                    child: Text('Extend Pass'),
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromARGB(255, 98, 131, 189),
                     ),
@@ -96,12 +233,5 @@ class _RenewPassScreenState extends State<RenewPassScreen> {
         ),
       ),
     );
-  }
-
-  // Sample method to calculate the new duration based on your logic
-  String calculateNewDuration(String? selectedDuration) {
-    // Replace this with your own logic to calculate the new duration
-    // For now, it simply returns the selected duration as is.
-    return selectedDuration ?? '';
   }
 }

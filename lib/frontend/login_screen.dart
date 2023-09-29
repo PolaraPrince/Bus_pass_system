@@ -122,12 +122,14 @@ class LoginScreen extends StatelessWidget {
       final username = user['username'] ?? '';
       final email = user['email'] ?? '';
       final password = user['password'] ?? '';
+      final passId = user['passId'] ?? '';
 
       return User(
         id: id,
         username: username,
         email: email,
         password: password,
+        passId: passId,
       );
     } else {
       return null;

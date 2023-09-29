@@ -1,13 +1,17 @@
 import 'dart:math';
-
+import 'package:bus_pass_system/frontend/Renewpassscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:bus_pass_system/frontend/user_model.dart';
+import 'package:flutter/services.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class ApplyPassScreen extends StatefulWidget {
   final User user;
+   final String? passId; // Define passId
+  final DateTime? passExpirationDate;
 
-  const ApplyPassScreen({super.key, required this.user});
+  const ApplyPassScreen({super.key, required this.user, required this.passId, // Pass passId as a parameter
+    required this.passExpirationDate,});
 
   @override
   _ApplyPassScreenState createState() => _ApplyPassScreenState();
@@ -50,6 +54,36 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
     final random = Random();
     final generatedPassId = 'PASS-${random.nextInt(100000)}';
     return generatedPassId;
+  }
+
+  // Calculate the expiration date based on the selected duration
+  DateTime calculateExpirationDate(String selectedDuration) {
+    final currentDate = DateTime.now();
+    int months = 0;
+
+    switch (selectedDuration) {
+      case '1 Month':
+        months = 1;
+        break;
+      case '3 Months':
+        months = 3;
+        break;
+      case '6 Months':
+        months = 6;
+        break;
+      case '9 Months':
+        months = 9;
+        break;
+      case '12 Months':
+        months = 12;
+        break;
+      default:
+      // Handle the case when the duration is not recognized.
+    }
+
+    // Calculate the expiration date by adding months to the current date
+    final expirationDate = currentDate.add(Duration(days: 30 * months));
+    return expirationDate;
   }
 
   @override
@@ -131,13 +165,16 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                       labelText: 'Mobile No',
                       prefixText: '+91 ',
                     ),
-                    validator: (value) {
+                    inputFormatters: [
+                      FilteringTextInputFormatter
+                          .digitsOnly, // Only allow digits
+                    ],
+                   validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your mobile number';
                       }
-                      // Check if the value contains only numbers and allows optional spaces and the "+91" prefix
-                      if (!RegExp(r'^(?:\+91\s?)?\d{10}$').hasMatch(value)) {
-                        return 'Please enter a valid mobile number';
+                      if (value.length != 10) {
+                        return 'Mobile number must be 10 digits';
                       }
                       return null;
                     },
@@ -190,8 +227,11 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                         // Use the selectedProfession and selectedDuration variables for the chosen values
                         final profession = selectedProfession;
                         final duration = selectedDuration;
-                        final random = Random();
-                        final generatedPassId = 'PASS${random.nextInt(10000)}';
+
+                        // Calculate the expiration date
+                        final expirationDate =
+                            calculateExpirationDate(duration!);
+final passId = generatePassID();
                         // Create a new MongoDB client
                         final mongoClient = mongo.Db(
                             'mongodb://localhost:27017/pass_applications');
@@ -204,17 +244,16 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
 
                           // Insert the pass application data into the collection
                           collection.insert({
-                            'passId': generatedPassId,
+                            'passId': passId,
                             'name': name,
                             'email': email,
                             'mobile': mobile,
                             'address': address,
                             'profession': profession,
                             'duration': duration,
-                            'passID': generatedPassId, // Include the pass ID
+                            'passExpirationDate': expirationDate,
                           }).then((_) {
                             // Application data is saved successfully.
-                            // Generate a random pass ID
 
                             // Close the MongoDB connection
                             mongoClient.close();
@@ -222,7 +261,7 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                             // Set the flag, save the pass ID, and reset the form
                             setState(() {
                               isSubmitted = true;
-                              passId = generatedPassId;
+                              
                               resetForm();
                             });
 
@@ -240,7 +279,13 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'Pass ID: $generatedPassId',
+                                        'Pass ID: $passId',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Expiration Date: $expirationDate', // Display the expiration date
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -282,7 +327,16 @@ class _ApplyPassScreenState extends State<ApplyPassScreen> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RenewPassScreen(
+                                                    user: widget.user,
+                                                    passId: passId,
+                                                    passExpirationDate:
+                                                        expirationDate,
+                                                  )));
                                     },
                                     child: const Text('OK'),
                                   ),
